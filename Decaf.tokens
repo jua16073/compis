@@ -41,6 +41,7 @@ NUM=40
 LETTER=41
 CHAR=42
 ID=43
+BLANK=44
 'class'=1
 'Program'=2
 '{'=3

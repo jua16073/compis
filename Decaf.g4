@@ -14,7 +14,7 @@ CHAR: LETTER;
 ID: LETTER (LETTER|DIGIT)*;
 BLANK: [ \t\r\n]+ -> skip ; // skip spaces, tabs, newlines
 
-program: 'class' 'Program' '{' declaration '}';
+program: 'class' 'Program' '{' declaration '}' EOF;
 
 declaration: structDeclaration | varDeclaration | methodDeclaration;
 
