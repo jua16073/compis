@@ -1,0 +1,11 @@
+class Program {
+    int a;
+    void why() {
+        int c;
+        int b;
+        a = 0;
+        b = 2;
+        c = a + b;
+        return a;
+    }
+}
