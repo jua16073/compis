@@ -22,13 +22,13 @@ program: 'class' 'Program' '{' (declaration)* '}' EOF;
 
 declaration: structDeclaration | varDeclaration | methodDeclaration;
 
-varDeclaration: varType ID ';' | varType ID '[' NUM ']' ';';
+varDeclaration: varType ID ';' #normalVar | varType ID '[' NUM ']' ';' #arrayVar;
 
 structDeclaration: 'struct' ID '{' (varDeclaration)* '}';
 
 varType: 'int' | 'char' | 'boolean' | 'struct' ID | structDeclaration | 'void';
 
-methodDeclaration: methodType ID '(' (parameter)* ')' block ;
+methodDeclaration: methodType ID '(' (parameter | parameter (',' parameter)*)?  ')' block ;
 
 methodType: 'int' | 'char' | 'boolean' | 'void';
 
@@ -38,17 +38,18 @@ parameterType: 'int' | 'char' | 'boolean';
 
 block: '{' (varDeclaration)* (statement)* '}';
 
-statement: 'if' '(' expression ')' block ('else' block)?
-        | 'while' '(' expression ')' block
-        | 'return' (expression)? ';'
-        | methodCall ';'
-        | block
-        | location '=' expression
-        | (expression)? ';';
+statement: 'if' '(' expression ')' block ('else' block)? #ifScope
+        | 'while' '(' expression ')' block #whileScope
+        | 'return' (expression)? ';' #stmnt_return
+        | methodCall ';' #stmnt_methodCall
+        | block #stmnt_block
+        | location '=' expression #stmnt_equal
+        | (expression)? ';' #stmnt_expression; 
 
 location: (ID | ID '[' expression ']' ) ('.' location)?;
 
 expression: location | methodCall | literal
+        | expression p_arith_op expression
         | expression op expression 
         | '-' expression 
         | '!' expression
@@ -60,7 +61,8 @@ arg: expression;
 
 op: arith_op | rel_op | eq_op | cond_op;
 
-arith_op: '+' | '-' | '*' | '/' | '%';
+arith_op: '+' | '-' | '%';
+p_arith_op: '*' | '/';
 
 rel_op: '<' | '>' | '<=' | '>=';
 

@@ -10,15 +10,24 @@ def open_file():
     root.filename = filedialog.askopenfilename(initialdir = "/Documents/compis/", title = "Select a File", filetypes = (("all files", "*.*"), ("python", "*.py")) )
     archivo = root.filename    
 
+menu = Menu(root)
+root.config(menu = menu)
+filemenu = Menu(menu)
+menu.add_cascade(label = 'File', menu = filemenu)
+filemenu.add_command(label = "Open File", command = open_file)
+filemenu.add_separator()
 
 
-frame1 = LabelFrame(root, text = "nani")
+frame1 = LabelFrame(root, text = "Escrito")
 frame1.grid(row = 1, column = 0, pady = 10)
 
-code = Entry(frame1)
-code.grid()
+send_button = Button(frame1, text = "save")
+send_button.grid(column = 1, row = 1)
 
-frame2 = LabelFrame(root, text = "nani2")
+code = Entry(frame1)
+code.grid(row = 0, column = 0)
+
+frame2 = LabelFrame(root, text = "Output")
 frame2.grid(row = 1, column = 1, pady = 10)
 
 button = Button(frame2, command = open_file)

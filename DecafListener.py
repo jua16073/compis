@@ -26,12 +26,21 @@ class DecafListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by DecafParser#varDeclaration.
-    def enterVarDeclaration(self, ctx:DecafParser.VarDeclarationContext):
+    # Enter a parse tree produced by DecafParser#normalVar.
+    def enterNormalVar(self, ctx:DecafParser.NormalVarContext):
         pass
 
-    # Exit a parse tree produced by DecafParser#varDeclaration.
-    def exitVarDeclaration(self, ctx:DecafParser.VarDeclarationContext):
+    # Exit a parse tree produced by DecafParser#normalVar.
+    def exitNormalVar(self, ctx:DecafParser.NormalVarContext):
+        pass
+
+
+    # Enter a parse tree produced by DecafParser#arrayVar.
+    def enterArrayVar(self, ctx:DecafParser.ArrayVarContext):
+        pass
+
+    # Exit a parse tree produced by DecafParser#arrayVar.
+    def exitArrayVar(self, ctx:DecafParser.ArrayVarContext):
         pass
 
 
@@ -98,12 +107,66 @@ class DecafListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by DecafParser#statement.
-    def enterStatement(self, ctx:DecafParser.StatementContext):
+    # Enter a parse tree produced by DecafParser#ifScope.
+    def enterIfScope(self, ctx:DecafParser.IfScopeContext):
         pass
 
-    # Exit a parse tree produced by DecafParser#statement.
-    def exitStatement(self, ctx:DecafParser.StatementContext):
+    # Exit a parse tree produced by DecafParser#ifScope.
+    def exitIfScope(self, ctx:DecafParser.IfScopeContext):
+        pass
+
+
+    # Enter a parse tree produced by DecafParser#whileScope.
+    def enterWhileScope(self, ctx:DecafParser.WhileScopeContext):
+        pass
+
+    # Exit a parse tree produced by DecafParser#whileScope.
+    def exitWhileScope(self, ctx:DecafParser.WhileScopeContext):
+        pass
+
+
+    # Enter a parse tree produced by DecafParser#stmnt_return.
+    def enterStmnt_return(self, ctx:DecafParser.Stmnt_returnContext):
+        pass
+
+    # Exit a parse tree produced by DecafParser#stmnt_return.
+    def exitStmnt_return(self, ctx:DecafParser.Stmnt_returnContext):
+        pass
+
+
+    # Enter a parse tree produced by DecafParser#stmnt_methodCall.
+    def enterStmnt_methodCall(self, ctx:DecafParser.Stmnt_methodCallContext):
+        pass
+
+    # Exit a parse tree produced by DecafParser#stmnt_methodCall.
+    def exitStmnt_methodCall(self, ctx:DecafParser.Stmnt_methodCallContext):
+        pass
+
+
+    # Enter a parse tree produced by DecafParser#stmnt_block.
+    def enterStmnt_block(self, ctx:DecafParser.Stmnt_blockContext):
+        pass
+
+    # Exit a parse tree produced by DecafParser#stmnt_block.
+    def exitStmnt_block(self, ctx:DecafParser.Stmnt_blockContext):
+        pass
+
+
+    # Enter a parse tree produced by DecafParser#stmnt_equal.
+    def enterStmnt_equal(self, ctx:DecafParser.Stmnt_equalContext):
+        pass
+
+    # Exit a parse tree produced by DecafParser#stmnt_equal.
+    def exitStmnt_equal(self, ctx:DecafParser.Stmnt_equalContext):
+        pass
+
+
+    # Enter a parse tree produced by DecafParser#stmnt_expression.
+    def enterStmnt_expression(self, ctx:DecafParser.Stmnt_expressionContext):
+        pass
+
+    # Exit a parse tree produced by DecafParser#stmnt_expression.
+    def exitStmnt_expression(self, ctx:DecafParser.Stmnt_expressionContext):
         pass
 
 
@@ -158,6 +221,15 @@ class DecafListener(ParseTreeListener):
 
     # Exit a parse tree produced by DecafParser#arith_op.
     def exitArith_op(self, ctx:DecafParser.Arith_opContext):
+        pass
+
+
+    # Enter a parse tree produced by DecafParser#p_arith_op.
+    def enterP_arith_op(self, ctx:DecafParser.P_arith_opContext):
+        pass
+
+    # Exit a parse tree produced by DecafParser#p_arith_op.
+    def exitP_arith_op(self, ctx:DecafParser.P_arith_opContext):
         pass
 
 
