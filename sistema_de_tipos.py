@@ -1,27 +1,59 @@
 DEFAULT_TYPES = ['int', 'boolean', 'char']
 
 class Scope:
-    def __init__(self, id = 0, type = "void",  name = "global", parent = None, params = None):
+    def __init__(self, id = 0,  name = "global", parent = None, params = None):
         self.id = id
-        self.type = type
+        #self.type = type
         self.name = name
-        self.new_types = []
+        self.instantiables = []
         self.symbols = []
         self.parent = parent
 
-class Types:
-    def __init__ (self, id = 0, name = None):
+    def get_instance(self, name):
+        for instance in self.instantiables:
+            if instance.name == name:
+                return instance
+    
+    def add_instantiable(self, id, name, type, ret = None, subs = [], size = 0):
+        instan = Instantiable(id, name, type, ret, subs, size)
+        self.instantiables.append(instan)
+    
+    def get_symbol(self, name):
+        for symbol in self.symbols:
+            if symbol.name == name:
+                return symbol
+
+    def add_symbol(self, type, id = 0, name = None, offset = 0):
+        symbol = Symbols(type, id, name, offset)
+        self.symbols.append(symbol)
+    
+
+
+class Instantiable:
+    def __init__ (self, id = 0, name = None, type = None, ret = None, subs = [], size = 0 ):
         self.id = id
         self.name = name
-        self.size = 0
-        self.inside = []
+        if type == "struct":
+            self.type = type
+            self.size = size
+            self.sub_attributes = subs
+        else:
+            self.type = type
+            self.ret = ret
+            self.params = subs
 
 class Symbols:
-    def __init__ (self, type, id = 0, name = None, offset = 0):
+    def __init__ (self, type, name,  id = 0, offset = 0):
         self.id = id
         self.name = name
         self.type = type
         self.offset = offset
+
+class Error:
+    def __init__ (self, problem, line, columns):
+        self.problem = problem
+        self.line = line
+        self.column = columns
 
 
 

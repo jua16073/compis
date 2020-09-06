@@ -20,7 +20,7 @@ tree = parser.program()
 printer = DecafListener()
 walker = ParseTreeWalker()
 walker.walk(printer, tree)
-print(Trees.toStringTree(tree, None, parser))
+#print(Trees.toStringTree(tree, None, parser))
 nani = Visitor.MyDecafVisitor()
 nani.visit(tree)
     
