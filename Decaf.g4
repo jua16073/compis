@@ -13,9 +13,10 @@ NUM: DIGIT (DIGIT)* ;
 
 
 ID: LETTER (LETTER|DIGIT)* ;
+CHAR:'\'' LETTER '\'';
 SPACES : [ \t\r\n\f]+  ->channel(HIDDEN);
 LineComment:   '//' ~[\r\n]*-> skip;
-CHAR: LETTER;
+
 //BLANK: [ \t\r\n]+ -> skip ; // skip spaces, tabs, newlines
 
 program: 'class' 'Program' '{' (declaration)* '}' EOF;
@@ -48,12 +49,12 @@ statement: 'if' '(' expression ')' block ('else' block)? #ifScope
 
 location: (ID | ID '[' expression ']' ) ('.' location)?;
 
-expression: location | methodCall | literal
-        | expression p_arith_op expression
-        | expression op expression 
-        | '-' expression 
-        | '!' expression
-        | '(' expression ')' ;
+expression: location #expr_location | methodCall #expr_methodCall | literal #expr_literal
+        | expression p_arith_op expression #expr_arith_op
+        | expression op expression #expr_op
+        | '-' expression #expr_minus
+        | '!' expression #expr_not
+        | '(' expression ')' #expr_par; 
 
 methodCall: ID '(' (arg | arg (',' arg)*)?    ')';
 
@@ -72,5 +73,5 @@ cond_op: '&&' | '||';
 
 literal: int_literal | char_literal | bool_literal;
 int_literal: NUM;
-char_literal: '"' CHAR '"'; 
+char_literal: CHAR; 
 bool_literal: 'true' | 'false';

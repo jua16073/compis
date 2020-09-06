@@ -104,8 +104,43 @@ class DecafVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by DecafParser#expression.
-    def visitExpression(self, ctx:DecafParser.ExpressionContext):
+    # Visit a parse tree produced by DecafParser#expr_location.
+    def visitExpr_location(self, ctx:DecafParser.Expr_locationContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by DecafParser#expr_literal.
+    def visitExpr_literal(self, ctx:DecafParser.Expr_literalContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by DecafParser#expr_op.
+    def visitExpr_op(self, ctx:DecafParser.Expr_opContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by DecafParser#expr_minus.
+    def visitExpr_minus(self, ctx:DecafParser.Expr_minusContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by DecafParser#expr_par.
+    def visitExpr_par(self, ctx:DecafParser.Expr_parContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by DecafParser#expr_arith_op.
+    def visitExpr_arith_op(self, ctx:DecafParser.Expr_arith_opContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by DecafParser#expr_methodCall.
+    def visitExpr_methodCall(self, ctx:DecafParser.Expr_methodCallContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by DecafParser#expr_not.
+    def visitExpr_not(self, ctx:DecafParser.Expr_notContext):
         return self.visitChildren(ctx)
 
 

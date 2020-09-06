@@ -23,9 +23,17 @@ class Scope:
             if symbol.name == name:
                 return symbol
 
-    def add_symbol(self, type, id = 0, name = None, offset = 0):
-        symbol = Symbols(type, id, name, offset)
+    def add_symbol(self, type, name, id = 0, offset = 0):
+        symbol = Symbols(type, name, id, offset)
         self.symbols.append(symbol)
+    
+    def get_subattribute(self, instance_name, sub_name):
+        for instance in self.instantiables:
+            if instance.name == instance_name:
+                for sub in instance.sub_attributes:
+                    if sub.name == sub_name:
+                        return sub
+        return None
     
 
 

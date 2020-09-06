@@ -4,7 +4,7 @@ class Program {
         int before_nani1;
     }
     struct nani {
-        int sub_nani;
+        int sub_nani[2];
         int sub_nani2;
         struct before_nani yay;
     }
@@ -13,15 +13,21 @@ class Program {
         num3 = num1 + num2;
         return num3;
     }
-    void why(int nani) {
+    void nada(){
+        return;
+    }
+    int why(int nani) {
         int c;
         int b;
-        int d[4];
+        char d[4];
+        struct nani mainNani;
         boolean elbool;
+        mainNani.sub_nani = 5;
+        d[0] = 'c';
         a = 0;
         b = 2;
         suma(a,b);
-        el_bool = true;
+        elbool = true;
         c = a + b;
         return a;
     }
