@@ -179,6 +179,15 @@ class DecafListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by DecafParser#expr_cond_op.
+    def enterExpr_cond_op(self, ctx:DecafParser.Expr_cond_opContext):
+        pass
+
+    # Exit a parse tree produced by DecafParser#expr_cond_op.
+    def exitExpr_cond_op(self, ctx:DecafParser.Expr_cond_opContext):
+        pass
+
+
     # Enter a parse tree produced by DecafParser#expr_location.
     def enterExpr_location(self, ctx:DecafParser.Expr_locationContext):
         pass
@@ -206,6 +215,15 @@ class DecafListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by DecafParser#expr_eq_op.
+    def enterExpr_eq_op(self, ctx:DecafParser.Expr_eq_opContext):
+        pass
+
+    # Exit a parse tree produced by DecafParser#expr_eq_op.
+    def exitExpr_eq_op(self, ctx:DecafParser.Expr_eq_opContext):
+        pass
+
+
     # Enter a parse tree produced by DecafParser#expr_minus.
     def enterExpr_minus(self, ctx:DecafParser.Expr_minusContext):
         pass
@@ -230,6 +248,15 @@ class DecafListener(ParseTreeListener):
 
     # Exit a parse tree produced by DecafParser#expr_arith_op.
     def exitExpr_arith_op(self, ctx:DecafParser.Expr_arith_opContext):
+        pass
+
+
+    # Enter a parse tree produced by DecafParser#expr_rel_op.
+    def enterExpr_rel_op(self, ctx:DecafParser.Expr_rel_opContext):
+        pass
+
+    # Exit a parse tree produced by DecafParser#expr_rel_op.
+    def exitExpr_rel_op(self, ctx:DecafParser.Expr_rel_opContext):
         pass
 
 
@@ -266,15 +293,6 @@ class DecafListener(ParseTreeListener):
 
     # Exit a parse tree produced by DecafParser#arg.
     def exitArg(self, ctx:DecafParser.ArgContext):
-        pass
-
-
-    # Enter a parse tree produced by DecafParser#op.
-    def enterOp(self, ctx:DecafParser.OpContext):
-        pass
-
-    # Exit a parse tree produced by DecafParser#op.
-    def exitOp(self, ctx:DecafParser.OpContext):
         pass
 
 

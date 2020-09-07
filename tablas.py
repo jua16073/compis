@@ -34,7 +34,7 @@ class MyDecafVisitor(DecafVisitor):
         method_type = ctx.methodType().getText()
         global scope_ids, instantiable_ids, symbols_ids, offset
         scope_ids += 1
-        new_scope = tables.Scope(scope_ids, method_name, parent= scopes[-1].id)
+        new_scope = tables.Scope(scope_ids, method_name, scopes[-1].id, method_type)
         scopes.append(new_scope)
         params = ctx.parameter()
         p = []
@@ -66,49 +66,100 @@ class MyDecafVisitor(DecafVisitor):
             else:
                 new_error = tables.Error("parameter already defined", ctx.start.line, ctx.start.column)
                 ERRORS.append(new_error)
-        self.visitChildren(ctx)
         nani = (ctx.block().statement())
         the_return = None
         for part in nani:
             if 'return' in part.getText():
-                if part.expression() != None:
-                    the_return = part.expression().getText()
-                    for scope in scopes[::-1]:
-                        tipo_return = scope.get_symbol(the_return)                        
-                        if tipo_return != None:
-                            if tipo_return.type == method_type:
-                                break
-                            else:
-                                new_error = tables.Error(the_return + " type and method type are not the same", ctx.start.line, ctx.start.column)
-                                ERRORS.append(new_error)
-                                break
-                    else:
-                        new_error = tables.Error(the_return + " not found in valid scopes", ctx.start.line, ctx.start.column)
-                        ERRORS.append(new_error)
-                else:
-                    if method_type != "void":
-                        new_error = tables.Error("return does not match method type", ctx.start.line, ctx.start.column)
-                        ERRORS.append(new_error)
-        scopes.pop()
-        if scopes[-1].get_instance(method_name):
+                break
+            #     if part.expression() != None:
+            #         the_return = part.expression().getText()
+            #         val = self.visit(part.expression())
+            #         if val != method_type:
+            #             new_error = tables.Error(the_return + " type " + val + " is not the same as method type " + method_type, ctx.start.line, ctx.start.column)
+            #             ERRORS.append(new_error)
+            #             break
+            #     else:
+            #         if method_type != "void":
+            #             new_error = tables.Error("return does not match method type", ctx.start.line, ctx.start.column)
+            #             ERRORS.append(new_error)
+            #             break
+            #     break
+        else:
+            if method_type != "void":
+                new_error = tables.Error("return does not match method type", ctx.start.line, ctx.start.column)
+                ERRORS.append(new_error)
+        
+        if scopes[-2].get_instance(method_name):
             new_error = tables.Error("method already defined in scope", ctx.start.line, ctx.start.column)
             ERRORS.append(new_error)
         else:
-            scopes[-1].add_instantiable(instantiable_ids, method_name, method_type, the_return,p)
+            scopes[-2].add_instantiable(instantiable_ids, method_name, method_type, the_return,p)
+        self.visitChildren(ctx)
+        scopes.pop()
         return 0
+
+    def visitIfScope(self,ctx):
+        val = self.visit(ctx.expression())
+        global scope_ids
+        scope_ids += 1
+        if val != "boolean":
+            new_error = tables.Error("expected boolean got " + val, ctx.start.line, ctx.start.column)
+            ERRORS.append(new_error)
+        new_scope = tables.Scope(scope_ids, "if" + str(scope_ids), scopes[-1])
+        scopes.append(new_scope)
+        self.visitChildren(ctx)
+        scopes.pop()
+        return None
+
+    def visitWhileScope(self,ctx):
+        val = self.visit(ctx.expression())
+        global scope_ids
+        scope_ids += 1
+        if val != "boolean":
+            new_error = tables.Error("expected boolean got " + val, ctx.start.line, ctx.start.column)
+            ERRORS.append(new_error)
+        new_scope = tables.Scope(scope_ids, "while" + str(scope_ids), scopes[-1])
+        scopes.append(new_scope)
+        self.visitChildren(ctx)
+        scopes.pop()
+        return None
+    
+    def visitStmnt_return(self, ctx):
+        if ctx.expression() != None:
+            val = self.visit(ctx.expression())
+            for scope in scopes[::-1]:
+                if scope.type != None:
+                    if val != scope.type:
+                        new_error = tables.Error("return " + ctx.expression().getText() + " does not match method type " + scope.type, ctx.start.line, ctx.start.column)
+                        ERRORS.append(new_error)
+                        break
+        else:
+            for scope in scopes[::-1]:
+                if scope.type != None:
+                    if "void" != scope.type:
+                        new_error = tables.Error("empty return  does not match method type " + scope.type, ctx.start.line, ctx.start.column)
+                        ERRORS.append(new_error)
+                        break
+        return None
+
 
     def visitBlock(self, ctx):
         self.visitChildren(ctx)
-        return 0
+        return None
 
     def visitLocation(self,ctx, parent = None):
         name  = ctx.ID().getText()
+        if ctx.expression() != None:
+            val = self.visit(ctx.expression())
+            if val != "int":
+                new_error = tables.Error("expected int got " + ctx.expresion()+ " of type "+ val, ctx.start.line, ctx.start.column)
+                ERRORS.append(new_error)
         if parent != None:
             for scope in scopes[::-1]:
                 symbol = scope.get_subattribute(parent, name)
                 if symbol != None:
                     if ctx.location() != None:
-                        val  = self.visitLocation(ctx.location(), symbol.name.replace('struct', ''))
+                        val  = self.visitLocation(ctx.location(), symbol.type.replace('struct', ''))
                         return val
                     return symbol.type
             else:
@@ -244,22 +295,126 @@ class MyDecafVisitor(DecafVisitor):
                 if len(args) == len(method.params):
                     actual = 0
                     for arg in args:
-                        for sub_scope in scopes[::-1]:
-                            arg_type = sub_scope.get_symbol(arg.getText())
-                            if arg_type != None and arg_type.type == method.params[actual].type:
-                                break
-                            elif arg_type != None:
-                                new_error = tables.Error("type of "+ arg_type.type +" " + arg.getText() + " does not match with parameter "+ method.params[actual].type+ " "+ method.params[actual].name, ctx.start.line, ctx.start.column)
-                                ERRORS.append(new_error)
-                            elif arg_type == None:
-                                pass
-                        else:
-                            new_error = tables.Error("symbol " + arg.getText() + " was not found", ctx.start.line, ctx.start.column)
+                        val = self.visit(arg)
+                        if val != None and val == method.params[actual].type:
+                            break
+                        elif val != None:
+                            new_error = tables.Error("type of "+ val +" " + arg.getText() + " does not match with parameter "+ method.params[actual].type+ " "+ method.params[actual].name, ctx.start.line, ctx.start.column)
                             ERRORS.append(new_error)
                         actual += 1
                 return method.type
-        return 0
-                
+        return None
+
+    def visitStmnt_equal(self, ctx):
+        left = self.visit(ctx.left)
+        right = self.visit(ctx.right)
+        if left == None:
+            new_error = tables.Error(ctx.left.getText() +  " is None", ctx.start.line, ctx.start.column)
+            ERRORS.append(new_error)
+        elif right == None:
+            new_error = tables.Error(ctx.right.getText() +  " is None", ctx.start.line, ctx.start.column)
+            ERRORS.append(new_error)
+        elif left != right:
+            new_error = tables.Error(ctx.left.getText() + " expected " + left +" found " + ctx.right.getText() + " of type " + right + " instead", ctx.start.line, ctx.start.column)
+            ERRORS.append(new_error)
+        return None
+
+    def visitExpr_not(self, ctx):
+        val = self.visit(ctx.expression())
+        if val == "boolean":
+            return val
+        else:
+            new_error = tables.Error("expected boolean got " + val, ctx.start.line, ctx.start.column)
+            ERRORS.append(new_error)
+    
+    def visitExpr_par(self,ctx):
+        val = self.visit(ctx.expression())
+        return val
+
+    def visitExpr_minus(self, ctx):
+        val = self.visit(ctx.expression())
+        return val
+    
+    def visitExpr_arith_op(self, ctx):
+        left = self.visit(ctx.left)
+        right = self.visit(ctx.right)
+        if right == "int" and left == "int":
+            return "int"
+        elif left == None:
+            new_error = tables.Error(ctx.left.getText() +  " is None", ctx.start.line, ctx.start.column)
+            ERRORS.append(new_error)
+        elif right == None:
+            new_error = tables.Error(ctx.right.getText() +  " is None", ctx.start.line, ctx.start.column)
+            ERRORS.append(new_error)
+        else:
+            new_error = tables.Error("expected int and int got " + left + " and " + right, ctx.start.line, ctx.start.column)
+            ERRORS.append(new_error)
+        return None
+
+    def visitExpr_op(self, ctx):
+        left = self.visit(ctx.left)
+        right = self.visit(ctx.right)
+        if right == "int" and left == "int":
+            return "int"
+        elif left == None:
+            new_error = tables.Error(ctx.left.getText() +  " is None", ctx.start.line, ctx.start.column)
+            ERRORS.append(new_error)
+        elif right == None:
+            new_error = tables.Error(ctx.right.getText() +  " is None", ctx.start.line, ctx.start.column)
+            ERRORS.append(new_error)
+        else:
+            new_error = tables.Error("expected int and int got " + left + " and " + right, ctx.start.line, ctx.start.column)
+            ERRORS.append(new_error)
+        return None
+    
+    def visitExpr_rel_op(self, ctx):
+        left = self.visit(ctx.left)
+        right = self.visit(ctx.right)
+        if right == "int" and left == "int":
+            return "boolean"
+        elif left == None:
+            new_error = tables.Error(ctx.left.getText() +  " is None", ctx.start.line, ctx.start.column)
+            ERRORS.append(new_error)
+        elif right == None:
+            new_error = tables.Error(ctx.right.getText() +  " is None", ctx.start.line, ctx.start.column)
+            ERRORS.append(new_error)
+        else:
+            new_error = tables.Error("expected int and int got " + left + " and " + right, ctx.start.line, ctx.start.column)
+            ERRORS.append(new_error)
+        return None
+    
+    def visitExpr_eq_op(self, ctx):
+        left = self.visit(ctx.left)
+        right = self.visit(ctx.right)
+        if left == right:
+            return "boolean"
+        elif left == None:
+            new_error = tables.Error(ctx.left.getText() +  " is None", ctx.start.line, ctx.start.column)
+            ERRORS.append(new_error)
+        elif right == None:
+            new_error = tables.Error(ctx.right.getText() +  " is None", ctx.start.line, ctx.start.column)
+            ERRORS.append(new_error)
+        else:
+            new_error = tables.Error("expected same types got " + left + " and " + right, ctx.start.line, ctx.start.column)
+            ERRORS.append(new_error)
+        return None
+    
+    def visitExpr_cond_op(self, ctx):
+        left = self.visit(ctx.left)
+        right = self.visit(ctx.right)
+        if left == "boolean" and right == "boolean":
+            return "boolean"
+        elif left == None:
+            new_error = tables.Error(ctx.left.getText() +  " is None", ctx.start.line, ctx.start.column)
+            ERRORS.append(new_error)
+        elif right == None:
+            new_error = tables.Error(ctx.right.getText() +  " is None", ctx.start.line, ctx.start.column)
+            ERRORS.append(new_error)
+        else:
+            new_error = tables.Error("expected boolean types got " + left + " and " + right, ctx.start.line, ctx.start.column)
+            ERRORS.append(new_error)
+        return None
+
 
     def visitLiteral(self, ctx):
         val = self.visitChildren(ctx)

@@ -79,19 +79,19 @@ def serializedATN():
         buf.write("\7p\2\2\u00aa(\3\2\2\2\u00ab\u00ac\7?\2\2\u00ac*\3\2\2")
         buf.write("\2\u00ad\u00ae\7\60\2\2\u00ae,\3\2\2\2\u00af\u00b0\7/")
         buf.write("\2\2\u00b0.\3\2\2\2\u00b1\u00b2\7#\2\2\u00b2\60\3\2\2")
-        buf.write("\2\u00b3\u00b4\7-\2\2\u00b4\62\3\2\2\2\u00b5\u00b6\7\'")
-        buf.write("\2\2\u00b6\64\3\2\2\2\u00b7\u00b8\7,\2\2\u00b8\66\3\2")
-        buf.write("\2\2\u00b9\u00ba\7\61\2\2\u00ba8\3\2\2\2\u00bb\u00bc\7")
-        buf.write(">\2\2\u00bc:\3\2\2\2\u00bd\u00be\7@\2\2\u00be<\3\2\2\2")
-        buf.write("\u00bf\u00c0\7>\2\2\u00c0\u00c1\7?\2\2\u00c1>\3\2\2\2")
-        buf.write("\u00c2\u00c3\7@\2\2\u00c3\u00c4\7?\2\2\u00c4@\3\2\2\2")
-        buf.write("\u00c5\u00c6\7?\2\2\u00c6\u00c7\7?\2\2\u00c7B\3\2\2\2")
-        buf.write("\u00c8\u00c9\7#\2\2\u00c9\u00ca\7?\2\2\u00caD\3\2\2\2")
-        buf.write("\u00cb\u00cc\7(\2\2\u00cc\u00cd\7(\2\2\u00cdF\3\2\2\2")
-        buf.write("\u00ce\u00cf\7~\2\2\u00cf\u00d0\7~\2\2\u00d0H\3\2\2\2")
-        buf.write("\u00d1\u00d2\7v\2\2\u00d2\u00d3\7t\2\2\u00d3\u00d4\7w")
-        buf.write("\2\2\u00d4\u00d5\7g\2\2\u00d5J\3\2\2\2\u00d6\u00d7\7h")
-        buf.write("\2\2\u00d7\u00d8\7c\2\2\u00d8\u00d9\7n\2\2\u00d9\u00da")
+        buf.write("\2\u00b3\u00b4\7-\2\2\u00b4\62\3\2\2\2\u00b5\u00b6\7,")
+        buf.write("\2\2\u00b6\64\3\2\2\2\u00b7\u00b8\7\61\2\2\u00b8\66\3")
+        buf.write("\2\2\2\u00b9\u00ba\7\'\2\2\u00ba8\3\2\2\2\u00bb\u00bc")
+        buf.write("\7>\2\2\u00bc:\3\2\2\2\u00bd\u00be\7@\2\2\u00be<\3\2\2")
+        buf.write("\2\u00bf\u00c0\7>\2\2\u00c0\u00c1\7?\2\2\u00c1>\3\2\2")
+        buf.write("\2\u00c2\u00c3\7@\2\2\u00c3\u00c4\7?\2\2\u00c4@\3\2\2")
+        buf.write("\2\u00c5\u00c6\7?\2\2\u00c6\u00c7\7?\2\2\u00c7B\3\2\2")
+        buf.write("\2\u00c8\u00c9\7#\2\2\u00c9\u00ca\7?\2\2\u00caD\3\2\2")
+        buf.write("\2\u00cb\u00cc\7(\2\2\u00cc\u00cd\7(\2\2\u00cdF\3\2\2")
+        buf.write("\2\u00ce\u00cf\7~\2\2\u00cf\u00d0\7~\2\2\u00d0H\3\2\2")
+        buf.write("\2\u00d1\u00d2\7v\2\2\u00d2\u00d3\7t\2\2\u00d3\u00d4\7")
+        buf.write("w\2\2\u00d4\u00d5\7g\2\2\u00d5J\3\2\2\2\u00d6\u00d7\7")
+        buf.write("h\2\2\u00d7\u00d8\7c\2\2\u00d8\u00d9\7n\2\2\u00d9\u00da")
         buf.write("\7u\2\2\u00da\u00db\7g\2\2\u00dbL\3\2\2\2\u00dc\u00dd")
         buf.write("\t\2\2\2\u00ddN\3\2\2\2\u00de\u00df\t\3\2\2\u00dfP\3\2")
         buf.write("\2\2\u00e0\u00e4\5M\'\2\u00e1\u00e3\5M\'\2\u00e2\u00e1")
@@ -170,7 +170,7 @@ class DecafLexer(Lexer):
             "'class'", "'Program'", "'{'", "'}'", "';'", "'['", "']'", "'struct'", 
             "'int'", "'char'", "'boolean'", "'void'", "'('", "','", "')'", 
             "'if'", "'else'", "'while'", "'return'", "'='", "'.'", "'-'", 
-            "'!'", "'+'", "'%'", "'*'", "'/'", "'<'", "'>'", "'<='", "'>='", 
+            "'!'", "'+'", "'*'", "'/'", "'%'", "'<'", "'>'", "'<='", "'>='", 
             "'=='", "'!='", "'&&'", "'||'", "'true'", "'false'" ]
 
     symbolicNames = [ "<INVALID>",

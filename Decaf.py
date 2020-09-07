@@ -9,7 +9,9 @@ import tablas as Visitor
 import sistema_de_tipos as tables
 import sys
 
-program = open('help.txt', 'r+')
+#program = open('help.txt', 'r+')
+#program = open('final.txt', "r+")
+program = open("final_boss.txt", "r+")
 text = program.read()
 program.close()
 text = antlr4.InputStream(text)

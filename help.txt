@@ -1,17 +1,19 @@
 class Program {
     int a;
+    char fa;
     struct before_nani{
         int before_nani1;
-    }
+    };
     struct nani {
         int sub_nani[2];
         int sub_nani2;
         struct before_nani yay;
-    }
+    };
     int suma(int num1, int num2){
         int num3;
+        char d;
         num3 = num1 + num2;
-        return num3;
+        return num1 + num2;
     }
     void nada(){
         return;
@@ -25,7 +27,7 @@ class Program {
         mainNani.sub_nani = 5;
         d[0] = 'c';
         a = 0;
-        b = 2;
+        b = -2;
         suma(a,b);
         elbool = true;
         c = a + b;

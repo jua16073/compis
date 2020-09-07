@@ -25,7 +25,7 @@ declaration: structDeclaration | varDeclaration | methodDeclaration;
 
 varDeclaration: varType ID ';' #normalVar | varType ID '[' NUM ']' ';' #arrayVar;
 
-structDeclaration: 'struct' ID '{' (varDeclaration)* '}';
+structDeclaration: 'struct' ID '{' (varDeclaration)* '}' ';';
 
 varType: 'int' | 'char' | 'boolean' | 'struct' ID | structDeclaration | 'void';
 
@@ -39,19 +39,22 @@ parameterType: 'int' | 'char' | 'boolean';
 
 block: '{' (varDeclaration)* (statement)* '}';
 
-statement: 'if' '(' expression ')' block ('else' block)? #ifScope
+statement: 'if' '(' expression ')' block1 = block ('else' block2 = block)? #ifScope
         | 'while' '(' expression ')' block #whileScope
         | 'return' (expression)? ';' #stmnt_return
         | methodCall ';' #stmnt_methodCall
         | block #stmnt_block
-        | location '=' expression #stmnt_equal
+        | left = location '=' right = expression #stmnt_equal
         | (expression)? ';' #stmnt_expression; 
 
 location: (ID | ID '[' expression ']' ) ('.' location)?;
 
-expression: location #expr_location | methodCall #expr_methodCall | literal #expr_literal
-        | expression p_arith_op expression #expr_arith_op
-        | expression op expression #expr_op
+expression: methodCall #expr_methodCall | location #expr_location  | literal #expr_literal
+        | left = expression p_arith_op right = expression #expr_arith_op
+        | left = expression arith_op right = expression #expr_op
+        | left = expression rel_op right = expression #expr_rel_op
+        | left = expression eq_op right = expression #expr_eq_op
+        | left = expression cond_op right = expression #expr_cond_op
         | '-' expression #expr_minus
         | '!' expression #expr_not
         | '(' expression ')' #expr_par; 
@@ -60,10 +63,10 @@ methodCall: ID '(' (arg | arg (',' arg)*)?    ')';
 
 arg: expression;
 
-op: arith_op | rel_op | eq_op | cond_op;
+//op: arith_op | rel_op | eq_op | cond_op;
 
-arith_op: '+' | '-' | '%';
-p_arith_op: '*' | '/';
+arith_op: '+' | '-' ;
+p_arith_op: '*' | '/' | '%';
 
 rel_op: '<' | '>' | '<=' | '>=';
 

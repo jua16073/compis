@@ -1,14 +1,14 @@
 DEFAULT_TYPES = ['int', 'boolean', 'char']
 
 class Scope:
-    def __init__(self, id = 0,  name = "global", parent = None, params = None):
+    def __init__(self, id = 0,  name = "global", parent = None, type = None):
         self.id = id
-        #self.type = type
+        self.type = type
         self.name = name
         self.instantiables = []
         self.symbols = []
         self.parent = parent
-
+    
     def get_instance(self, name):
         for instance in self.instantiables:
             if instance.name == name:
