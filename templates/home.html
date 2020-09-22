@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compis</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css')}}">
+</head>
+<body>
+    <header>
+        nani
+    </header>
+    <div class = "block">
+        <div class="box">
+            <h3 class="titulo1">Código</h3>
+            <form action="{{ url_for('home')}} " method="POST">
+                <textarea class="input_code" name="codigo" id="codigo" cols="30" rows="10"></textarea>
+                <br>
+                <input class="send" type="submit" name="send" >
+            </form>
+        </div>
+        <div class="box">
+            <h3 class="titulo1">Output</h3>
+            <p></p>
+        </div>
+    </div>
+</body>
+</html>

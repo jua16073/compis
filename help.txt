@@ -11,9 +11,10 @@ class Program {
     };
     int suma(int num1, int num2){
         int num3;
+        int num1;
         char d;
         num3 = num1 + num2;
-        return num1 + num2;
+        return d;
     }
     void nada(){
         return;

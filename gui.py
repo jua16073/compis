@@ -1,48 +1,24 @@
-from tkinter import *
-from tkinter import filedialog
+from flask import Flask, render_template, request, session
+
+app  = Flask(__name__)
+app.secret_key = "Triceracop:D"
+
+#session.get no truena
 
 
-root = Tk()
-root.title("hhhmmm")
+@app.route('/')
+def home():
+    return render_template("home.html")
 
-def open_file():
-    global archivo
-    root.filename = filedialog.askopenfilename(initialdir = "/Documents/compis/", title = "Select a File", filetypes = (("all files", "*.*"), ("python", "*.py")) )
-    archivo = root.filename    
-
-menu = Menu(root)
-root.config(menu = menu)
-filemenu = Menu(menu)
-menu.add_cascade(label = 'File', menu = filemenu)
-filemenu.add_command(label = "Open File", command = open_file)
-filemenu.add_separator()
+@app.route('/', methods = ["POST"])
+def get_code():
+    code = request.form["codigo"]
+    print(code)
+    return render_template("home.html")
 
 
-frame1 = LabelFrame(root, text = "Escrito")
-frame1.grid(row = 1, column = 0, pady = 10)
-
-send_button = Button(frame1, text = "save")
-send_button.grid(column = 1, row = 1)
-
-code = Entry(frame1)
-code.grid(row = 0, column = 0)
-
-frame2 = LabelFrame(root, text = "Output")
-frame2.grid(row = 1, column = 1, pady = 10)
-
-button = Button(frame2, command = open_file)
-button.grid()
 
 
-# entry = Canvas(root)
-# entry.grid(row = 0, column = 0, columnspan = 2)
 
-# def myClick():
-#     myLabel = Label(root, text= entry.get())
-#     myLabel.grid()
-
-# button = Button(root, text = "Enter your name", command = lambda:myClick(), bg = "blue")
-# button.grid(row = 0, column = 2)
-
-root.mainloop()
-    
+if __name__ == "__main__":
+    app.run(host='localhost', port = 5000, debug = True)
