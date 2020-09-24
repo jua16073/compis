@@ -27,6 +27,7 @@ header{
     display: block;
     margin-left: 1rem;
     margin-right: 1rem;
+    min-width: 89%;
 }
 
 .send{
@@ -35,6 +36,7 @@ header{
     margin-top: 10px;
     margin-bottom: 10px;
 }
+
 
 .titulo1{
     display: grid;
