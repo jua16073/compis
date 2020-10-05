@@ -25,5 +25,6 @@ walker.walk(printer, tree)
 #print(Trees.toStringTree(tree, None, parser))
 nani = Visitor.MyDecafVisitor()
 nani.visit(tree)
+print(Visitor.ERRORS)
     
 
