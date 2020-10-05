@@ -19,6 +19,8 @@ instantiable_ids = 0
 class MyDecafVisitor(DecafVisitor):
 
     def visitProgram(self, ctx):
+        global ERRORS
+        ERRORS = []
         self.visitChildren(ctx)
 
         if scopes[-1].get_instance("main") == None:

@@ -42,3 +42,11 @@ header{
     display: grid;
     place-items: center;
 }
+
+.errors{
+    margin-left: 1rem;
+    margin-right: 1rem;
+    display: grid;
+    place-items: left;
+    color: black;
+}

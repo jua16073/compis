@@ -12,6 +12,7 @@ import sys
 
 app  = Flask(__name__)
 app.secret_key = "Triceracop:D"
+app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 
 #session.get no truena
 
@@ -39,13 +40,32 @@ print("todo gucci")
 
 @app.route('/')
 def home():
+    errors = []
     return render_template("home.html")
 
 @app.route('/', methods = ["POST"])
 def get_code():
+    errors = []
+    code = ""
     code = request.form["codigo"]
-    print(code)
-    return render_template("home.html")
+    session.code = code
+    print("errores", errors)
+    if code!= " ":
+        text = antlr4.InputStream(code)
+        lexer = DecafLexer(text)
+        stream = CommonTokenStream(lexer)
+        parser = DecafParser(stream)
+        tree = parser.program()
+        printer = DecafListener()
+        walker = ParseTreeWalker()
+        walker.walk(printer, tree)
+        nani = Visitor.MyDecafVisitor()
+        nani.visit(tree)
+        errors = Visitor.ERRORS
+    else:
+        errors = []
+    print(errors)
+    return render_template("home.html", errors = errors, code = code)
 
 
 
