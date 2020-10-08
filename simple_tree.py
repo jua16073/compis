@@ -8,3 +8,6 @@ class Node:
 
     def PrintTree(self):
         print(self.data)
+
+
+
