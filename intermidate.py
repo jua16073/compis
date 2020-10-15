@@ -27,8 +27,9 @@ class Inter(DecafVisitor):
     def visitStmnt_return(self,ctx):
         if ctx.expression:
             register = self.visit(ctx.expression())
-            # if register in self.og_registers:
-            #     self.registers.append(register)
+            self.line += "Return " + register + "\n"
+            if register in self.og_registers:
+                self.registers.append(register)
         return self.visitChildren(ctx)
 
     def visitMethodCall(self, ctx):
