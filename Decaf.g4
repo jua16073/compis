@@ -50,14 +50,15 @@ statement: 'if' '(' expression ')' block1 = block ('else' block2 = block)? #ifSc
 location: (ID | ID '[' expression ']' ) ('.' location)?;
 
 expression: methodCall #expr_methodCall | location #expr_location  | literal #expr_literal
+        | '(' expression ')' #expr_par
+        | '-' expression #expr_minus
+        | '!' expression #expr_not
         | left = expression p_arith_op right = expression #expr_arith_op
         | left = expression arith_op right = expression #expr_op
         | left = expression rel_op right = expression #expr_rel_op
         | left = expression eq_op right = expression #expr_eq_op
-        | left = expression cond_op right = expression #expr_cond_op
-        | '-' expression #expr_minus
-        | '!' expression #expr_not
-        | '(' expression ')' #expr_par; 
+        | left = expression cond_op right = expression #expr_cond_op;
+        
 
 methodCall: ID '(' (arg | arg (',' arg)*)?    ')';
 
@@ -66,6 +67,7 @@ arg: expression;
 //op: arith_op | rel_op | eq_op | cond_op;
 
 arith_op: '+' | '-' ;
+
 p_arith_op: '*' | '/' | '%';
 
 rel_op: '<' | '>' | '<=' | '>=';

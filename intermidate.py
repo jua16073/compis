@@ -8,6 +8,7 @@ class Inter(DecafVisitor):
         self.og_registers = ["r0", "r1","r2", "r3", "r4", "r5", "r6", "r7"]
         self.registers = self.og_registers[::-1]
         self.line = ""
+        self.label = 0
 
     def visitProgram(self, ctx):
         self.visitChildren(ctx)
@@ -15,28 +16,133 @@ class Inter(DecafVisitor):
 
     def visitMethodDeclaration(self, ctx):
         name = ctx.ID().getText()
-        start = "func begin " + name + "\n"
+        start = name +": \n"
+        start += "func begin num"  + "\n"
         self.line += start
         self.visitChildren(ctx)
         end = "func end \n"
         self.line += end
         return 0
+    
+    def visitStmnt_return(self,ctx):
+        if ctx.expression:
+            register = self.visit(ctx.expression())
+            # if register in self.og_registers:
+            #     self.registers.append(register)
+        return self.visitChildren(ctx)
 
-    def visitExpr_op(self, ctx):
-        print(ctx.left.getText())
-        print(ctx.right.getText())
-        print("/////////////////////")
+    def visitMethodCall(self, ctx):
+        method = ctx.ID().getText()
+        if ctx.arg() :
+            for arg in ctx.arg():
+                param = self.visit(arg)
+                self.line += "push param " + param + "\n"
+        register = self.registers.pop()
+        self.line += register + " = _LCall " + method + "\n"
+        self.visitChildren(ctx)
+        return 0
+
+    def visitExpr_par(self, ctx):
+        return self.visit(ctx.expression())
+
+    def visitWhileScope(self, ctx):
+        start_label = "L" + str(self.label)
+        while_line = start_label + ":\n"
+        self.label += 1
+        self.line += while_line
+        register = self.visit(ctx.expression())
+        end_label = "L" + str(self.label)
+        self.label += 1
+        while_cont1 = "IfZ " + register + " Goto " + end_label +" \n"
+        if register in self.og_registers:
+            self.registers.append(register)
+        self.line += while_cont1
+        self.visit(ctx.block())
+        while_end = "Goto " + start_label + " \n"
+        while_end += end_label + ":\n"
+        self.line += while_end
+        return 0
+
+    def visitIfScope(self, ctx):
+        register = self.visit(ctx.expression())
+        salto = "L" + str(self.label)
+        self.label += 1
+        if_line = "IfZ " + register + " Goto " + salto + "\n"
+        if register in self.og_registers:
+            self.registers.append(register)
+        self.line += if_line
+        self.visit(ctx.block1)
+        if ctx.block2:
+            end_line = salto + ": \n"
+            end = "L" + str(self.label)
+            self.line += "Goto " + end + "\n"
+            self.line += end_line
+            self.visit(ctx.block2)
+            self.line += end + ":\n"
+            self.label += 1
+        else:
+            end_line = salto + ": \n"
+            self.line += end_line
+        return 0
+
+    def visitExpr_arith_op(self, ctx):
         left = self.visit(ctx.left)
         right = self.visit(ctx.right)
         register = self.registers.pop()
-        operation = register + "=" + left + ctx.arith_op().getText() + right
-        if left in self.og_registers:
-            self.og_registers.append(left)
+        operation = register + "=" + str(left) + ctx.p_arith_op().getText() + str(right)
         if right in self.og_registers:
-            self.og_registers.append(right)
-
+            self.registers.append(right)
+        if left in self.og_registers:
+            self.registers.append(left)
         self.line += operation + "\n"
-        self.visitChildren(ctx)
+        return register
+
+    def visitExpr_op(self, ctx):
+        left = self.visit(ctx.left)
+        right = self.visit(ctx.right)
+        register = self.registers.pop()
+        operation = register + "=" + str(left) + ctx.arith_op().getText() + str(right)
+        if right in self.og_registers:
+            self.registers.append(right)
+        if left in self.og_registers:
+            self.registers.append(left)
+        self.line += operation + "\n"
+        return register
+
+    def visitExpr_rel_op(self, ctx):
+        left = self.visit(ctx.left)
+        right = self.visit(ctx.right)
+        register = self.registers.pop()
+        operation = register + "=" + left + ctx.rel_op().getText() + right
+        if right in self.og_registers:
+            self.registers.append(right)
+        if left in self.og_registers:
+            self.registers.append(left)
+        self.line += operation + "\n"
+        return register
+    
+    def visitExpr_eq_op(self, ctx):
+        left = self.visit(ctx.left)
+        right = self.visit(ctx.right)
+        register = self.registers.pop()
+        operation = register + "=" + left + ctx.eq_op().getText() + right
+        if right in self.og_registers:
+            self.registers.append(right)
+        if left in self.og_registers:
+            self.registers.append(left)
+        self.line += operation + "\n"
+        return register
+
+    def visitExpr_cond_op(self, ctx):
+        left = self.visit(ctx.left)
+        right = self.visit(ctx.right)
+        register = self.registers.pop()
+        operation = register + "=" + left + ctx.cond_op().getText() + right
+        if right in self.og_registers:
+            self.registers.append(right)
+        if left in self.og_registers:
+            self.registers.append(left)
+        self.line += operation + "\n"
         return register
 
     def visitExpr_literal(self, ctx):
@@ -56,8 +162,20 @@ class Inter(DecafVisitor):
     
     def visitBool_literal(self, ctx):
         boolean = ctx.getText()
+        if boolean == 'true':
+            boolean = "1"
+        else:
+            boolean = "0"
         return ("boolean", boolean)
 
     def visitStmnt_equal(self, ctx):
-        self.visitChildren(ctx)
+        left = self.visit(ctx.left)
+        right = self.visit(ctx.right)
+        equal = str(left) + " = " + str(right) + "\n"
+        if right in self.og_registers:
+            self.registers.append(right)
+        self.line += equal
         return 
+    
+    def visitLocation(self, ctx):
+        return ctx.getText()

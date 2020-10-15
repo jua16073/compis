@@ -30,6 +30,7 @@ walker.walk(printer, tree)
 # print(Visitor.ERRORS)
 nani = intermidate.Inter()
 nani.visit(tree)
+print("#############################")
 print(nani.line)
     
 
