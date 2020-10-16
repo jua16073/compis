@@ -2,26 +2,35 @@ from DecafVisitor import DecafVisitor
 
 class Inter(DecafVisitor):
 
-    def __init__(self):
+    def __init__(self, scopes):
         DecafVisitor.__init__(self)
         self.tree = None
         self.og_registers = ["r0", "r1","r2", "r3", "r4", "r5", "r6", "r7"]
         self.registers = self.og_registers[::-1]
         self.line = ""
         self.label = 0
+        self.scope_ids = 0
+        self.scope_actual = ["global"]
+        self.scopes = scopes
 
     def visitProgram(self, ctx):
         self.visitChildren(ctx)
+        print(self.scope_actual)
         return 
 
     def visitMethodDeclaration(self, ctx):
         name = ctx.ID().getText()
+        self.scope_ids +=1
+        self.scope_actual.append(name)
+        print(self.scope_actual)
         start = name +": \n"
-        start += "func begin num"  + "\n"
+        actual = self.scopes[self.scope_actual[-1]]
+        start += "func begin " + str(actual.get_size())  + "\n"
         self.line += start
         self.visitChildren(ctx)
         end = "func end \n"
         self.line += end
+        self.scope_actual.pop()
         return 0
     
     def visitStmnt_return(self,ctx):
@@ -47,6 +56,9 @@ class Inter(DecafVisitor):
         return self.visit(ctx.expression())
 
     def visitWhileScope(self, ctx):
+        self.scope_ids += 1
+        self.scope_actual.append("while" + str(self.scope_ids))
+        print(self.scope_actual)
         start_label = "L" + str(self.label)
         while_line = start_label + ":\n"
         self.label += 1
@@ -62,9 +74,14 @@ class Inter(DecafVisitor):
         while_end = "Goto " + start_label + " \n"
         while_end += end_label + ":\n"
         self.line += while_end
+        self.scope_actual.pop()
         return 0
 
     def visitIfScope(self, ctx):
+        self.scope_ids += 1
+        name = "if" + str(self.scope_ids)
+        self.scope_actual.append(name)
+        print(self.scope_actual)
         register = self.visit(ctx.expression())
         salto = "L" + str(self.label)
         self.label += 1
@@ -84,6 +101,7 @@ class Inter(DecafVisitor):
         else:
             end_line = salto + ": \n"
             self.line += end_line
+        self.scope_actual.pop()
         return 0
 
     def visitExpr_arith_op(self, ctx):

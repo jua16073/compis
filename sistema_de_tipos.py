@@ -34,6 +34,14 @@ class Scope:
                     if sub.name == sub_name:
                         return sub
         return None
+
+    def get_size(self):
+        size = 0
+        print(self.instantiables)
+        for instance in self.instantiables:
+            print(instance.name)
+            size += instance.size
+        return size
     
 
 
