@@ -35,7 +35,6 @@ class MyDecafVisitor(DecafVisitor):
         self.scope_ids += 1
         new_scope = tables.Scope(self.scope_ids, method_name, self.scopes[-1].id, method_type)
         self.scopes.append(new_scope)
-        self.total_scopes[new_scope.name] = new_scope
         params = ctx.parameter()
         p = []
         param_names = []
@@ -82,7 +81,8 @@ class MyDecafVisitor(DecafVisitor):
         else:
             self.scopes[-2].add_instantiable(self.instantiable_ids, method_name, method_type, the_return,p)
         self.visitChildren(ctx)
-        self.scopes.pop()
+        end_scope = self.scopes.pop()
+        self.total_scopes[new_scope.name] = end_scope
         return 0
 
     def visitIfScope(self,ctx):
@@ -93,9 +93,9 @@ class MyDecafVisitor(DecafVisitor):
             self.ERRORS.append(new_error)
         new_scope = tables.Scope(self.scope_ids, "if" + str(self.scope_ids), self.scopes[-1])
         self.scopes.append(new_scope)
-        self.total_scopes[new_scope.name] = new_scope
         self.visitChildren(ctx)
-        self.scopes.pop()
+        end = self.scopes.pop()
+        self.total_scopes[new_scope.name] = end
         return None
 
     def visitWhileScope(self,ctx):
@@ -106,9 +106,9 @@ class MyDecafVisitor(DecafVisitor):
             self.ERRORS.append(new_error)
         new_scope = tables.Scope(self.scope_ids, "while" + str(self.scope_ids), self.scopes[-1])
         self.scopes.append(new_scope)
-        self.total_scopes[new_scope.name] = new_scope
         self.visitChildren(ctx)
-        self.scopes.pop()
+        end = self.scopes.pop()
+        self.total_scopes[new_scope.name] = end
         return None
     
     def visitStmnt_return(self, ctx):

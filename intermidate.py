@@ -15,16 +15,15 @@ class Inter(DecafVisitor):
 
     def visitProgram(self, ctx):
         self.visitChildren(ctx)
-        print(self.scope_actual)
         return 
 
     def visitMethodDeclaration(self, ctx):
         name = ctx.ID().getText()
         self.scope_ids +=1
         self.scope_actual.append(name)
-        print(self.scope_actual)
         start = name +": \n"
         actual = self.scopes[self.scope_actual[-1]]
+        print(actual.instantiables)
         start += "func begin " + str(actual.get_size())  + "\n"
         self.line += start
         self.visitChildren(ctx)

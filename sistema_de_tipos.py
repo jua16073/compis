@@ -1,5 +1,9 @@
-DEFAULT_TYPES = ['int', 'boolean', 'char']
 
+DEFAULT_TYPES = {
+    'int': 4,
+    'boolean': 1,
+    'char': 1,
+}
 class Scope:
     def __init__(self, id = 0,  name = "global", parent = None, type = None):
         self.id = id
@@ -37,10 +41,11 @@ class Scope:
 
     def get_size(self):
         size = 0
-        print(self.instantiables)
-        for instance in self.instantiables:
-            print(instance.name)
-            size += instance.size
+        for instance in self.symbols:
+            if instance.type  in DEFAULT_TYPES:
+                size += DEFAULT_TYPES[instance.type]
+            else:
+                size += self.get_instance(instance.name)
         return size
     
 
