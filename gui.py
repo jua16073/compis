@@ -8,6 +8,7 @@ from antlr4.tree.Trees import Trees
 from DecafVisitor import DecafVisitor
 import tablas as Visitor
 import sistema_de_tipos as tables
+import intermidate as inter
 import sys
 
 app  = Flask(__name__)
@@ -61,11 +62,13 @@ def get_code():
         walker.walk(printer, tree)
         nani = Visitor.MyDecafVisitor()
         nani.visit(tree)
-        errors = Visitor.ERRORS
+        errors = nani.ERRORS
+        intermedio = inter.Inter(nani.total_scopes)
+        intermedio.visit(tree)
+        intercode = intermedio.line.split("\n")
     else:
         errors = []
-    print(errors)
-    return render_template("home.html", errors = errors, code = code)
+    return render_template("home.html", errors = errors, code = code, intercode = intercode)
 
 
 

@@ -33,7 +33,7 @@ class MyDecafVisitor(DecafVisitor):
         method_name = ctx.ID().getText()
         method_type = ctx.methodType().getText()
         self.scope_ids += 1
-        new_scope = tables.Scope(self.scope_ids, method_name, self.scopes[-1].id, method_type)
+        new_scope = tables.Scope(self.scope_ids, method_name, self.scopes[-1], method_type)
         self.scopes.append(new_scope)
         params = ctx.parameter()
         p = []
@@ -43,25 +43,25 @@ class MyDecafVisitor(DecafVisitor):
             param_name = param.ID().getText()
             if param_name not in param_names:
                 param_names.append(param_name)
-                new_param = tables.Symbols(param_type, param_name)
+                new_param = tables.Symbols(param_type, param_name, 1)
                 p.append(new_param)
                 self.symbols_ids += 1
                 size = 0
                 if param_type in DEFAULT_TYPES:
-                    size += DEFAULT_TYPES[param_type]
+                    size = DEFAULT_TYPES[param_type]
                 else:
                     search = param_type.replace("struct", "")
                     for scope in self.scopes[::-1]:
                         found = scope.get_instance(search)
                         if found:
                             if found.type == "struct":
-                                size += found.size
+                                size = found.size
                                 break
                     else:
                         new_error = tables.Error("type " + search + " not found", ctx.start.line, ctx.start.column)
                         self.ERRORS.append(new_error)
-                self.scopes[-1].add_symbol(param_type, param_name, self.symbols_ids)
-                #self.offset += size
+                self.scopes[-1].add_symbol(param_type, param_name, 1, self.symbols_ids)
+                self.offset += size
             else:
                 new_error = tables.Error("parameter already defined", ctx.start.line, ctx.start.column)
                 self.ERRORS.append(new_error)
@@ -222,7 +222,7 @@ class MyDecafVisitor(DecafVisitor):
         else:
             # symbol = tables.Symbols(type_var, name, self.symbols_ids, self.offset)
             # self.scopes[-1].symbols.append(symbol)
-            self.scopes[-1].add_symbol(type_var, name, self.symbols_ids, self.offset)
+            self.scopes[-1].add_symbol(type_var, name, 1, self.symbols_ids, self.offset)
         if type_var in DEFAULT_TYPES:
             self.offset += DEFAULT_TYPES[type_var]
         else:
@@ -250,7 +250,7 @@ class MyDecafVisitor(DecafVisitor):
             self.symbols_ids += 1
             # symbol = tables.Symbols(type_var, symbols_ids, name, self.offset)
             # self.scopes[-1].symbols.append(symbol)
-            self.scopes[-1].add_symbol(type_var, name, self.symbols_ids, self.offset)
+            self.scopes[-1].add_symbol(type_var, name, num, self.symbols_ids, self.offset)
             if type_var in DEFAULT_TYPES:
                 self.offset += (DEFAULT_TYPES[type_var] * int(num))
             else:

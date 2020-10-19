@@ -1,16 +1,17 @@
 class Program {
-    int fib(int a){
+    int a[4];
+
+    int fib(){
         int b;
         return a;
     }
 
     void main(){
-        int a;
         boolean b;
         int c;
         boolean d;
         boolean e;
-        a = 10;
+        a[3] = 10;
         a = (a * 8) - 5 / 9 * 3;
         b = true || false && false;
         if (b){

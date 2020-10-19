@@ -1,5 +1,11 @@
 from DecafVisitor import DecafVisitor
 
+DEFAULT_TYPES = {
+    'int': 4,
+    'boolean': 1,
+    'char': 1,
+}
+
 class Inter(DecafVisitor):
 
     def __init__(self, scopes):
@@ -12,10 +18,11 @@ class Inter(DecafVisitor):
         self.scope_ids = 0
         self.scope_actual = ["global"]
         self.scopes = scopes
+        self.cumulative = 0
 
     def visitProgram(self, ctx):
         self.visitChildren(ctx)
-        return 
+        return 0
 
     def visitMethodDeclaration(self, ctx):
         name = ctx.ID().getText()
@@ -23,7 +30,6 @@ class Inter(DecafVisitor):
         self.scope_actual.append(name)
         start = name +": \n"
         actual = self.scopes[self.scope_actual[-1]]
-        print(actual.instantiables)
         start += "func begin " + str(actual.get_size())  + "\n"
         self.line += start
         self.visitChildren(ctx)
@@ -35,10 +41,10 @@ class Inter(DecafVisitor):
     def visitStmnt_return(self,ctx):
         if ctx.expression:
             register = self.visit(ctx.expression())
-            self.line += "Return " + register + "\n"
+            self.line += "Return " + str(register) + "\n"
             if register in self.og_registers:
                 self.registers.append(register)
-        return self.visitChildren(ctx)
+        return 0
 
     def visitMethodCall(self, ctx):
         method = ctx.ID().getText()
@@ -46,9 +52,13 @@ class Inter(DecafVisitor):
             for arg in ctx.arg():
                 param = self.visit(arg)
                 self.line += "push param " + param + "\n"
+                if param in self.og_registers:
+                    self.registers.append(param)
         register = self.registers.pop()
         self.line += register + " = _LCall " + method + "\n"
-        self.visitChildren(ctx)
+        if register in self.og_registers:
+            self.registers.append(register)
+        #self.visitChildren(ctx)
         return 0
 
     def visitExpr_par(self, ctx):
@@ -57,7 +67,6 @@ class Inter(DecafVisitor):
     def visitWhileScope(self, ctx):
         self.scope_ids += 1
         self.scope_actual.append("while" + str(self.scope_ids))
-        print(self.scope_actual)
         start_label = "L" + str(self.label)
         while_line = start_label + ":\n"
         self.label += 1
@@ -80,7 +89,6 @@ class Inter(DecafVisitor):
         self.scope_ids += 1
         name = "if" + str(self.scope_ids)
         self.scope_actual.append(name)
-        print(self.scope_actual)
         register = self.visit(ctx.expression())
         salto = "L" + str(self.label)
         self.label += 1
@@ -166,6 +174,15 @@ class Inter(DecafVisitor):
     def visitExpr_literal(self, ctx):
         return self.visitChildren(ctx)
 
+    def visitStmnt_equal(self, ctx):
+        left = self.visit(ctx.left)
+        right = self.visit(ctx.right)
+        equal = str(left) + " = " + str(right) + "\n"
+        if right in self.og_registers:
+            self.registers.append(right)
+        self.line += equal
+        return left
+    
     def visitLiteral(self, ctx):
         val = self.visitChildren(ctx)
         return val[1]
@@ -185,15 +202,43 @@ class Inter(DecafVisitor):
         else:
             boolean = "0"
         return ("boolean", boolean)
-
-    def visitStmnt_equal(self, ctx):
-        left = self.visit(ctx.left)
-        right = self.visit(ctx.right)
-        equal = str(left) + " = " + str(right) + "\n"
-        if right in self.og_registers:
-            self.registers.append(right)
-        self.line += equal
-        return 
     
-    def visitLocation(self, ctx):
-        return ctx.getText()
+    def visitLocation(self, ctx, parent = None):
+        name = ctx.ID().getText()
+        offset = 0
+
+        for scope in self.scope_actual[::-1]:
+            sActual = self.scopes[scope]
+            if symbol := sActual.get_symbol(name):
+                break
+        
+        for symbol in sActual.symbols:
+            if symbol.name == name:
+                break
+            else:
+                if symbol.type in DEFAULT_TYPES:
+                    offset += DEFAULT_TYPES[symbol.type]
+                else:
+                    offset += sActual.get_instance_size(symbol.type.replace('struct', "")) * symbol.reps
+
+        if ctx.expression() != None:
+            resp = self.visit(ctx.expression())
+            try:
+                if symbol.type in DEFAULT_TYPES:
+                    offset += DEFAULT_TYPES[symbol.type] * int(ctx.expression().getText())
+                else:
+                    sym_type = symbol.type.replace("struct", "")
+                    offset += sActual.get_instance_size(sym_type) * int(ctx.expression().getText())
+            except:
+                register = self.registers.pop()
+                if symbol.type in DEFAULT_TYPES:
+                    self.line += register + " = " + resp + " * " + str(DEFAULT_TYPES[symbol.type]) + "\n"
+                else:
+                    sym_type = symbol.type.replace("struct", "")
+                    self.line += register + " = " + resp + " * " + str(sActual.get_instance_size(sym_type)) + "\n"
+                offset = register
+
+
+        sName = sActual.name[0] + str(sActual.id)
+        value  = sName + "[" + str(offset) + "]"
+        return value

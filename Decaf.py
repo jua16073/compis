@@ -12,7 +12,10 @@ import intermidate
 
 #program = open('help.txt', 'r+')
 #program = open('final.txt', "r+")
-program = open('nani2.txt', 'r+')
+program = open('nani.txt', 'r+')
+#program = open("test_files/ackerman.decaf", 'r+')
+# program = open("test_files/fib.decaf", 'r+')
+program = open("test_files/toB.decaf", 'r+')
 #program = open("final_boss.txt", "r+")
 text = program.read()
 program.close()
@@ -29,11 +32,12 @@ nani = Visitor.MyDecafVisitor()
 nani.visit(tree)
 for error in nani.ERRORS:
     print(error.problem, " in line ", error.line)
-print(nani.total_scopes)
+#print(nani.total_scopes)
 #print(Visitor.ERRORS)
 nani = intermidate.Inter(nani.total_scopes)
 nani.visit(tree)
 print("#############################")
 print(nani.line)
+#print(nani.registers)
     
 

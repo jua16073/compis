@@ -1,0 +1,24 @@
+class Program {
+    void print(int v) {}
+
+    void fib(int n) {
+        int a;
+        int b;
+        int c;
+
+        a = 0;
+        b = 1;
+        while (n-2 > 0) {
+            c = a + b;
+            a = b;
+            b = c;
+            n = n - 1;
+        }
+    }
+
+    void main() {
+        int n;
+        n = 5;
+        fib(n);
+    }
+}

@@ -27,8 +27,8 @@ class Scope:
             if symbol.name == name:
                 return symbol
 
-    def add_symbol(self, type, name, id = 0, offset = 0):
-        symbol = Symbols(type, name, id, offset)
+    def add_symbol(self, type, name, reps, id = 0, offset = 0):
+        symbol = Symbols(type, name, reps, id, offset)
         self.symbols.append(symbol)
     
     def get_subattribute(self, instance_name, sub_name):
@@ -38,14 +38,30 @@ class Scope:
                     if sub.name == sub_name:
                         return sub
         return None
+    
+    def get_instance_size(self, instance_name):
+        for instance in self.instantiables:
+            if instance.name == instance_name:
+                return instance.size
+        else:
+            return self.parent.get_instance_size(instance_name)
+
+    def get_subattribute_offset(self, instance_name):
+        for instance in self.instantiables:
+            if instance.name == instance_name:
+                return 0
 
     def get_size(self):
         size = 0
         for instance in self.symbols:
             if instance.type  in DEFAULT_TYPES:
-                size += DEFAULT_TYPES[instance.type]
+                size += DEFAULT_TYPES[instance.type] * int(instance.reps)
             else:
-                size += self.get_instance(instance.name)
+                if lsize:= self.get_instance(instance.type) != None:
+                    size += lsize.size * int(instance.reps)
+                else:
+                    lsize = self.parent.get_instance(instance.type.replace("struct", ""))
+                    size += lsize.size * int(instance.reps)
         return size
     
 
@@ -64,11 +80,12 @@ class Instantiable:
             self.params = subs
 
 class Symbols:
-    def __init__ (self, type, name,  id = 0, offset = 0):
+    def __init__ (self, type, name, reps, id = 0, offset = 0):
         self.id = id
         self.name = name
         self.type = type
         self.offset = offset
+        self.reps = reps
 
 class Error:
     def __init__ (self, problem, line, columns):
