@@ -9,13 +9,14 @@ import tablas as Visitor
 import sistema_de_tipos as tables
 import sys
 import intermidate
+import arm
 
 #program = open('help.txt', 'r+')
 #program = open('final.txt', "r+")
 program = open('nani.txt', 'r+')
 #program = open("test_files/ackerman.decaf", 'r+')
 # program = open("test_files/fib.decaf", 'r+')
-program = open("test_files/toB.decaf", 'r+')
+#program = open("test_files/toB.decaf", 'r+')
 #program = open("final_boss.txt", "r+")
 text = program.read()
 program.close()
@@ -38,6 +39,7 @@ nani = intermidate.Inter(nani.total_scopes)
 nani.visit(tree)
 print("#############################")
 print(nani.line)
+arm.to_arm(nani.line)
 #print(nani.registers)
     
 

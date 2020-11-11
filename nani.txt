@@ -1,15 +1,6 @@
 class Program {
-    char b;
-    int c;
-    int a[4];
-
-    void nope(){
-        int c;
-        c = 9;
-    }
-
     void main(){
-        a[3] = 10;
-        c = 5
+        int a;
+        a = 10+5;
     }
 }
