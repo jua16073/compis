@@ -1,8 +1,8 @@
 
 DEFAULT_TYPES = {
     'int': 4,
-    'boolean': 1,
-    'char': 1,
+    'boolean': 4,
+    'char': 4,
 }
 class Scope:
     def __init__(self, id = 0,  name = "global", parent = None, type = None):

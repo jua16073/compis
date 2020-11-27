@@ -35,11 +35,11 @@ for error in nani.ERRORS:
     print(error.problem, " in line ", error.line)
 #print(nani.total_scopes)
 #print(Visitor.ERRORS)
-nani = intermidate.Inter(nani.total_scopes)
-nani.visit(tree)
+nani2 = intermidate.Inter(nani.total_scopes)
+nani2.visit(tree)
 print("#############################")
-print(nani.line)
-arm.to_arm(nani.line)
+print(nani2.line)
+arm.to_arm(nani2.line, nani.total_scopes)
 #print(nani.registers)
     
 

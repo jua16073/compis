@@ -1,6 +1,16 @@
 class Program {
+    int a;
+    int c
+    int nani(){
+        int b;
+        int c;
+        char d;
+        b = 5+3;
+        return b;
+    }
+
     void main(){
-        int a;
         a = 10+5;
+        c = 10 -4;
     }
 }

@@ -115,7 +115,7 @@ class Inter(DecafVisitor):
         left = self.visit(ctx.left)
         right = self.visit(ctx.right)
         register = self.registers.pop()
-        operation = register + "=" + str(left) + ctx.p_arith_op().getText() + str(right)
+        operation = register + " = " + str(left) + " " + ctx.p_arith_op().getText()+ " " + str(right)
         if right in self.og_registers:
             self.registers.append(right)
         if left in self.og_registers:
@@ -127,7 +127,7 @@ class Inter(DecafVisitor):
         left = self.visit(ctx.left)
         right = self.visit(ctx.right)
         register = self.registers.pop()
-        operation = register + "=" + str(left) + ctx.arith_op().getText() + str(right)
+        operation = register + " = " + str(left) + " " + ctx.arith_op().getText() + " " + str(right)
         if right in self.og_registers:
             self.registers.append(right)
         if left in self.og_registers:
@@ -139,7 +139,7 @@ class Inter(DecafVisitor):
         left = self.visit(ctx.left)
         right = self.visit(ctx.right)
         register = self.registers.pop()
-        operation = register + "=" + left + ctx.rel_op().getText() + right
+        operation = register + " = " + left +" " + ctx.rel_op().getText()+ " " + right
         if right in self.og_registers:
             self.registers.append(right)
         if left in self.og_registers:
@@ -151,7 +151,7 @@ class Inter(DecafVisitor):
         left = self.visit(ctx.left)
         right = self.visit(ctx.right)
         register = self.registers.pop()
-        operation = register + "=" + left + ctx.eq_op().getText() + right
+        operation = register + " = " + left + " "+ctx.eq_op().getText()+ " " + right
         if right in self.og_registers:
             self.registers.append(right)
         if left in self.og_registers:
@@ -163,7 +163,7 @@ class Inter(DecafVisitor):
         left = self.visit(ctx.left)
         right = self.visit(ctx.right)
         register = self.registers.pop()
-        operation = register + "=" + left + ctx.cond_op().getText() + right
+        operation = register + " = " + left +" " +ctx.cond_op().getText()+ " " + right
         if right in self.og_registers:
             self.registers.append(right)
         if left in self.og_registers:
